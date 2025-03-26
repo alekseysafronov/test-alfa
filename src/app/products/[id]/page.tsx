@@ -2,20 +2,26 @@
 
 import { useEffect, useState } from 'react';
 import { useProductStore } from '@/store/useProductStore';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '@/services/api';
 import { Product } from '@/types/product';
 import { EditProductForm } from '@/components/EditProductForm';
 import { PencilIcon } from '@heroicons/react/24/outline';
 
+interface EditProductData {
+  title: string;
+  description: string;
+  price: number;
+  image: string;
+}
+
 export default function ProductPage() {
   const { id } = useParams();
-  const router = useRouter();
   const { products, toggleLike, updateProduct } = useProductStore();
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   
   useEffect(() => {
@@ -27,8 +33,8 @@ export default function ProductPage() {
           ...data,
           isLiked: existingProduct?.isLiked || false,
         });
-      } catch (error) {
-        setError('Ошибка при загрузке продукта');
+      } catch (err) {
+        setErrorMessage('Ошибка при загрузке продукта');
       } finally {
         setIsLoading(false);
       }
@@ -37,7 +43,7 @@ export default function ProductPage() {
     fetchProduct();
   }, [id, products]);
 
-  const handleEdit = (data: any) => {
+  const handleEdit = (data: EditProductData) => {
     if (product) {
       updateProduct(product.id, data);
       setProduct({ ...product, ...data });
@@ -55,11 +61,11 @@ export default function ProductPage() {
     );
   }
 
-  if (error || !product) {
+  if (errorMessage || !product) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center text-red-500">
-          <p className="text-xl mb-4">{error || 'Продукт не найден'}</p>
+          <p className="text-xl mb-4">{errorMessage || 'Продукт не найден'}</p>
           <Link
             href="/products"
             className="text-blue-500 hover:text-blue-600"

@@ -13,7 +13,6 @@ interface ProductStore {
   updateProduct: (id: string, product: Partial<Product>) => void;
 }
 
-const STORAGE_KEY = 'product-store';
 const LOCAL_PRODUCTS_KEY = 'local-products';
 
 const loadLocalProducts = (): Product[] => {
@@ -22,8 +21,8 @@ const loadLocalProducts = (): Product[] => {
   try {
     const serializedState = localStorage.getItem(LOCAL_PRODUCTS_KEY);
     return serializedState ? JSON.parse(serializedState) : [];
-  } catch (error) {
-    console.error('Error loading local products:', error);
+  } catch (err) {
+    console.error('Error loading local products:', err);
     return [];
   }
 };
@@ -33,12 +32,12 @@ const saveLocalProducts = (products: Product[]) => {
   
   try {
     localStorage.setItem(LOCAL_PRODUCTS_KEY, JSON.stringify(products));
-  } catch (error) {
-    console.error('Error saving local products:', error);
+  } catch (err) {
+    console.error('Error saving local products:', err);
   }
 };
 
-export const useProductStore = create<ProductStore>((set, get) => ({
+export const useProductStore = create<ProductStore>((set) => ({
   products: [],
   isLoading: false,
   error: null,
@@ -62,7 +61,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
 
       const allProducts = [...mergedProducts, ...newLocalProducts];
       set({ products: allProducts, isLoading: false });
-    } catch (error) {
+    } catch (err) {
       set({ error: 'Ошибка при загрузке продуктов', isLoading: false });
     }
   },
