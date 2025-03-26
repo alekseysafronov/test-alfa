@@ -21,8 +21,8 @@ const loadLocalProducts = (): Product[] => {
   try {
     const serializedState = localStorage.getItem(LOCAL_PRODUCTS_KEY);
     return serializedState ? JSON.parse(serializedState) : [];
-  } catch (err) {
-    console.error('Error loading local products:', err);
+  } catch {
+    console.error('Error loading local products');
     return [];
   }
 };
@@ -32,8 +32,8 @@ const saveLocalProducts = (products: Product[]) => {
   
   try {
     localStorage.setItem(LOCAL_PRODUCTS_KEY, JSON.stringify(products));
-  } catch (err) {
-    console.error('Error saving local products:', err);
+  } catch {
+    console.error('Error saving local products');
   }
 };
 
@@ -61,7 +61,7 @@ export const useProductStore = create<ProductStore>((set) => ({
 
       const allProducts = [...mergedProducts, ...newLocalProducts];
       set({ products: allProducts, isLoading: false });
-    } catch (err) {
+    } catch {
       set({ error: 'Ошибка при загрузке продуктов', isLoading: false });
     }
   },

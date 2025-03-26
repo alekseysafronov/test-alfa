@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useProductStore } from '@/store/useProductStore';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { api } from '@/services/api';
 import { Product } from '@/types/product';
 import { EditProductForm } from '@/components/EditProductForm';
@@ -33,7 +34,7 @@ export default function ProductPage() {
           ...data,
           isLiked: existingProduct?.isLiked || false,
         });
-      } catch (err) {
+      } catch {
         setErrorMessage('Ошибка при загрузке продукта');
       } finally {
         setIsLoading(false);
@@ -81,11 +82,13 @@ export default function ProductPage() {
     <>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <div className="mb-8">
-            <img
+          <div className="mb-8 relative h-96">
+            <Image
               src={product.image}
               alt={product.title}
-              className="w-full h-96 object-contain rounded-lg"
+              fill
+              className="object-contain rounded-lg"
+              priority
             />
           </div>
           

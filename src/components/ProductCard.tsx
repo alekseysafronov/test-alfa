@@ -4,17 +4,25 @@ import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { Product } from '@/types/product';
 import { useProductStore } from '@/store/useProductStore';
 import Link from 'next/link';
+import Image from 'next/image';
 import { EditProductForm } from './EditProductForm';
 
 interface ProductCardProps {
   product: Product;
 }
 
+interface EditProductData {
+  title: string;
+  description: string;
+  price: number;
+  image: string;
+}
+
 export const ProductCard = ({ product }: ProductCardProps) => {
   const { toggleLike, removeProduct, updateProduct } = useProductStore();
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleEdit = (data: any) => {
+  const handleEdit = (data: EditProductData) => {
     updateProduct(product.id, data);
     setIsEditing(false);
   };
@@ -23,11 +31,13 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     <>
       <div className="bg-white rounded-lg shadow-md overflow-hidden relative group max-w-[350px] mx-auto w-full">
         <Link href={`/products/${product.id}`} className="block">
-          <div className="aspect-w-16 aspect-h-9">
-            <img
+          <div className="aspect-w-16 aspect-h-9 relative h-48">
+            <Image
               src={product.image}
               alt={product.title}
-              className="object-contain w-full h-48"
+              fill
+              className="object-contain"
+              priority
             />
           </div>
           <div className="p-4">
